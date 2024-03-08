@@ -1,13 +1,9 @@
 USER_SCHEME = ("id", "first_name", "second_name", "email", "password")
 RECORD_SCHEME = ("id", "date", "content", "user", "title")
-
-# Початкові дані користувачів та записів у вигляді рядків
 users = []
 records = []
 DATABASE = []
-
 def parse_record(entity, record_str, entity_scheme):
-    """Парсить рядок запису та повертає словник."""
     record_str = record_str.strip()
     if record_str.startswith(entity):
         record_str = record_str[len(entity):].strip()
@@ -19,7 +15,6 @@ def parse_record(entity, record_str, entity_scheme):
         if key in entity_scheme:
             record_dict[key] = value
     return record_dict
-
 def create_record(entity, record_str, entity_scheme):
     global DATABASE
     try:
@@ -36,7 +31,6 @@ def search_entity_by_id(entity_name, entity_id):#id=0, first_name=test, second_n
             print(f"Знайдено {entity_name}: {entity}")
             return
     print(f"{entity_name} з id {entity_id} не знайдено")
-
 def search_entity_by_name(entity_name, entity_field, entity_value):
     global DATABASE
     found = False
@@ -46,7 +40,6 @@ def search_entity_by_name(entity_name, entity_field, entity_value):
             found = True
     if not found:
         print(f"{entity_name} з {entity_field} '{entity_value}' не знайдено")
-
 def main():
     global DATABASE
     while True:
@@ -80,11 +73,9 @@ def main():
             search_entity_by_name("Запис", "title", title)
         else:
             print("Невідома цифра")
-
 if __name__ == "__main__":
     for user in users:
         create_record("User", user, USER_SCHEME)
     for record in records:
         create_record("Record", record, RECORD_SCHEME)
     main()
-
