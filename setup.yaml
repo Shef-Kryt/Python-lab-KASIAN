@@ -4,7 +4,7 @@ pipeline {
         stage('Setup Server') {
             steps {
                 // Команди для налаштування сервера
-                sh 'apt-get update --yes'
+            
             }
         }
         // Додайте інші стадії тут
