@@ -1,22 +1,48 @@
-- name: Setup Server
-  hosts: all
-  become: true
-  tasks:
-    - name: Update system
-      apt:
-        update_cache: yes
-        upgrade: dist
-    - name: Install nginx
-      apt:
-        name: nginx
-        state: present
-    - name: Install VPN server
-  handlers:
-    - name: Restart nginx
-      service:
-        name: nginx
-        state: restarted
-  tags:
-    - update
-    - nginx
-    - vpn
+pipeline {
+    agent any
+    options {
+    
+        timestamps()
+        timeout(time: 1, unit: 'HOURS')
+    }
+    stages {
+        stage('Setup Server') {
+            steps {
+            
+                sh 'sudo apt update && sudo apt install -y nginx'
+            }
+        }
+        stage('Build') {
+            steps {
+              
+                sh 'mvn clean install'
+            }
+        }
+        stage('Test') {
+            steps {
+            
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+               
+                sh 'kubectl apply -f deployment.yaml'
+            }
+        }
+    }
+    post {
+        always {
+            // Команди, які завжди мають виконуватися після закінчення пайплайну
+            sh 'echo "Pipeline finished."'
+        }
+        success {
+            
+            sh 'echo "Pipeline succeeded."'
+        }
+        failure {
+          
+            sh 'echo "Pipeline failed."'
+        }
+    }
+}
