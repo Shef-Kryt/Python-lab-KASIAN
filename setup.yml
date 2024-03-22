@@ -1,0 +1,22 @@
+- name: Setup Server
+  hosts: all
+  become: true
+  tasks:
+    - name: Update system
+      apt:
+        update_cache: yes
+        upgrade: dist
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+    - name: Install VPN server
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+  tags:
+    - update
+    - nginx
+    - vpn
