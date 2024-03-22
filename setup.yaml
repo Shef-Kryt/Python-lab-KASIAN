@@ -9,7 +9,8 @@ pipeline {
         stage('Setup Server') {
             steps {
                 // Команди для налаштування сервера
-                sh 'apt update && apt install -y nginx'
+                sh 'apt-get update --yes'
+                sh 'apt install -y nginx --yes'
             }
         }
         stage('Build') {
