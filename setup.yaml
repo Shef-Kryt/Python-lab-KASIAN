@@ -1,36 +1,13 @@
 pipeline {
     agent any
-    options {
-        // Додаткові параметри пайплайну
-        timestamps()
-        timeout(time: 1, unit: 'HOURS')
-    }
     stages {
         stage('Setup Server') {
             steps {
                 // Команди для налаштування сервера
                 sh 'apt-get update --yes'
-                sh 'apt install -y nginx --yes'
             }
         }
-        stage('Build') {
-            steps {
-                // Команди для збирання проекту (наприклад, Maven)
-                sh 'mvn clean install'
-            }
-        }
-        stage('Test') {
-            steps {
-                // Команди для запуску тестів (наприклад, Maven)
-                sh 'mvn test'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                // Команди для розгортання проекту (наприклад, Kubernetes)
-                sh 'kubectl apply -f deployment.yaml'
-            }
-        }
+        // Додайте інші стадії тут
     }
     post {
         always {
