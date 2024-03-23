@@ -4,34 +4,20 @@ pipeline {
     stages {
         stage('Setup Server') {
             steps {
-                ansiblePlaybook(playbook: '''
-                    ---
-                    - name: Setup Server
-                      hosts: all
-                      become: true
-                      tasks:
-                        - name: Update system
-                          apt:
-                            update_cache: yes
-                            upgrade: dist
+                script {
+                    // Оновлення системи
+                    sh 'apt-get update'
+                    sh 'apt-get upgrade -y'
 
-                        - name: Install nginx
-                          apt:
-                            name: nginx
-                            state: present
+                    // Встановлення nginx
+                    sh 'apt-get install -y nginx'
 
-                        - name: Install VPN server
-                      handlers:
-                        - name: Restart nginx
-                          service:
-                            name: nginx
-                            state: restarted
-                      # Теги для кожного таска
-                      tags:
-                        - update
-                        - nginx
-                        - vpn
-                ''')
+                    // Встановлення VPN сервера
+                    // Додайте сюди команди для встановлення VPN сервера за допомогою apt
+
+                    // Перезапуск сервісу nginx
+                    sh 'systemctl restart nginx'
+                }
             }
         }
     }
