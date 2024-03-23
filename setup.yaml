@@ -6,11 +6,10 @@ pipeline {
             steps {
                 script {
                     // Оновлення системи
-                    sh 'apt-get update'
-                    sh 'apt-get upgrade -y'
+                    echo 'Оновлення системи'
 
                     // Встановлення nginx
-                    sh 'apt-get install -y nginx'
+                    echo 'Встановлення nginx'
 
                     // Встановлення VPN сервера
                     // Додайте сюди команди для встановлення VPN сервера за допомогою apt
