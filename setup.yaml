@@ -15,7 +15,7 @@ pipeline {
                     // Додайте сюди команди для встановлення VPN сервера за допомогою apt
 
                     // Перезапуск сервісу nginx
-                    sh 'systemctl restart nginx'
+                    echo 'systemctl restart nginx'
                 }
             }
         }
