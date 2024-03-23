@@ -1,17 +1,38 @@
 pipeline {
     agent any
-    post {
-        always {
-            // Команди, які завжди мають виконуватися після закінчення пайплайну
-            sh 'echo "Pipeline finished."'
-        }
-        success {
-            // Команди, які мають виконуватися при успішному завершенні пайплайну
-            sh 'echo "Pipeline succeeded."'
-        }
-        failure {
-            // Команди, які мають виконуватися при невдачі пайплайну
-            sh 'echo "Pipeline failed."'
+
+    stages {
+        stage('Setup Server') {
+            steps {
+                ansiblePlaybook(playbook: '''
+                    ---
+                    - name: Setup Server
+                      hosts: all
+                      become: true
+                      tasks:
+                        - name: Update system
+                          apt:
+                            update_cache: yes
+                            upgrade: dist
+
+                        - name: Install nginx
+                          apt:
+                            name: nginx
+                            state: present
+
+                        - name: Install VPN server
+                      handlers:
+                        - name: Restart nginx
+                          service:
+                            name: nginx
+                            state: restarted
+                      # Теги для кожного таска
+                      tags:
+                        - update
+                        - nginx
+                        - vpn
+                ''')
+            }
         }
     }
 }
