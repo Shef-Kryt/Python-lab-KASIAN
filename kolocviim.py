@@ -1,8 +1,11 @@
+#pre(final)iteration
+
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from abc import ABC, abstractmethod
 import sqlite3
-
+import uvicorn
 conn = sqlite3.connect('results.db')
 cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS matches
@@ -13,14 +16,14 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS matches
                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
 
 def save_match_result(player1, player2, winner):
-    cursor.execute('''INSERT INTO matches (гравець1, гравець2, переможець) VALUES (?, ?, ?)''', (player1, player2, winner))
+    cursor.execute('''INSERT INTO matches (player1, player2, winner) VALUES (?, ?, ?)''', (player1, player2, winner))
     conn.commit()
 
 def close_db_connection():
     conn.close()
 
-app = FastAPI()
-game = None
+app=FastAPI()
+game=None
 
 class Piece(ABC):
     def __init__(self, color):
@@ -231,17 +234,14 @@ async def get_match_results():
     return HTMLResponse(content=table_content)
 
 
-@app.post("/fast WIN", response_class=HTMLResponse)
-async def test_win(winner: int):
+@app.post("/fast_win", response_class=HTMLResponse)
+async def test_win(winner_name: str):
     if game is None:
         raise HTTPException(status_code=400, detail="Гра не розпочата")
 
-    if winner not in [1, 2]:
-        raise HTTPException(status_code=400, detail="Невірний переможець")
+    save_match_result(game.current_player, "програвший", winner_name)
+    return HTMLResponse(content=f"переможець {winner_name}")
 
-    save_match_result(game.current_player, "противник", f"Гравець{winner}")
-    return HTMLResponse(content=f"Переможець Гравець{winner}")
 
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
