@@ -136,6 +136,9 @@ class Game:
         self.history.append((player, piece, start, end))
         self.switch_player()
 
+        if self.check_pawns_eaten():
+            self.end_game()
+
     def switch_player(self):
         self.current_player = "Гравець2" if self.current_player == "Гравець1" else "Гравець1"
 
@@ -145,8 +148,18 @@ class Game:
             return False
         return piece.validate_move(start, end)
 
+    def check_pawns_eaten(self):
+        pawns_color = "білий" if self.current_player == "Гравець1" else "чорний"
+        pawns_row = 6 if pawns_color == "білий" else 1
+        for piece in self.board.board[pawns_row]:
+            if isinstance(piece, Pawn) and piece.color == pawns_color:
+                return False
+        return True
+
     def end_game(self):
-        pass
+        winner = "Гравець1" if self.current_player == "Гравець2" else "Гравець2"
+        save_match_result("Противник", "Противник", winner)
+        raise HTTPException(status_code=200, detail=f"Гравець {winner} переміг!")
 
 @app.post("/Початок гри")
 async def start_game(гравець1: str, гравець2: str, номер_гравця_1: str, номер_гравця_2: str):
@@ -170,7 +183,7 @@ async def start_game(гравець1: str, гравець2: str, номер_гр
             Bishop("білий"), Knight("білий"), Rook("білий")
         ]
 
-    return {"message": "Гра почалася!", "гравець_1": гравець1, "гравець_2": гравець2}
+    return {"message": "Старт", "гравець_1": гравець1, "гравець_2": гравець2}
 
 @app.post("/Рух пішок", response_class=HTMLResponse)
 async def move(player: str, start: str, end: str):
@@ -181,10 +194,10 @@ async def move(player: str, start: str, end: str):
     piece = game.board.board[start_index // 8][start_index % 8]
 
     if piece is None:
-        raise HTTPException(status_code=400, detail="На цій клітинці немає фігури")
+        raise HTTPException(status_code=400, detail="На клітинці немає фігури")
 
     if (game.current_player == "Гравець1" and "білий" not in piece) or (game.current_player == "Гравець2" and "чорний" not in piece):
-        raise HTTPException(status_code=400, detail="Це не ваша фігура")
+        raise HTTPException(status_code=400, detail="не ваша фігура")
 
     piece_instance = None
     if "пішачок" in piece.lower():
@@ -218,7 +231,7 @@ async def get_match_results():
     return HTMLResponse(content=table_content)
 
 
-@app.post("/test", response_class=HTMLResponse)
+@app.post("/fast WIN", response_class=HTMLResponse)
 async def test_win(winner: int):
     if game is None:
         raise HTTPException(status_code=400, detail="Гра не розпочата")
@@ -226,8 +239,8 @@ async def test_win(winner: int):
     if winner not in [1, 2]:
         raise HTTPException(status_code=400, detail="Невірний переможець")
 
-    save_match_result(game.current_player, "Opponent", f"Гравець{winner}")
-    return HTMLResponse(content=f"Виграш! Переможець: Гравець{winner}")
+    save_match_result(game.current_player, "противник", f"Гравець{winner}")
+    return HTMLResponse(content=f"Переможець Гравець{winner}")
 
 if __name__ == "__main__":
     import uvicorn
