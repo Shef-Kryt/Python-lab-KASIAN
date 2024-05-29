@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            {% if user.is_authenticated %}
+            <h1>
+                <img src="{% static 'favicon.ico' %}" alt="Icon" class="mr-2"> Lab5
+            </h1>
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Keyword</th>
+                        <th scope="col">Publication</th>
+                        <th scope="col">Resource</th>
+                        <th scope="col">Content</th>
+                        <th scope="col">Date Published</th>
+                        <th scope="col">Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if records %}
+                    {% for record in records %}
+                    <tr>
+                        <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
+                        <td>{{ record.title }}</td>
+                        <td>{{ record.keyword }}</td>
+                        <td>{{ record.publication }}</td>
+                        <td>{{ record.resource }}</td>
+                        <td>{{ record.content }}</td>
+                        <td>{{ record.date_published }}</td>
+                        <td>{{ record.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+            {% else %}
+            <h1>Login</h1>
+            <br/>
+            <form method="POST" action="{% url 'home' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
