@@ -7,13 +7,12 @@ services:
     startCommand: gunicorn your_project_name.wsgi --log-file -
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: .settings
+        value: your_project_name.settings
       - key: SECRET_KEY
         value: your-secret-key
       - key: DATABASE_URL
-        value: mysql://your-db-username:your-db-password@your-db-hostname:3306/your-db-name
+        value: mysql://lab5:010405@your-db-hostname:3306/lab5
     autoDeploy: true
-
 databases:
   - name: mysdb
     plan: free
