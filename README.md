@@ -1,1 +1,1 @@
-# Python-lab-KASIAN(FeS-22)
+# ДВСС КАСЬЯН lab56-6--ПРОЕКТ 
