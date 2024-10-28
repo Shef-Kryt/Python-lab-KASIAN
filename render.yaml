@@ -11,8 +11,9 @@ services:
       - key: SECRET_KEY
         value: your-secret-key
       - key: DATABASE_URL
-        value: mysql://lab5:010405@your-db-hostname:3306/lab5
+        value: mysql://lab5:010405@mysdb.internal:3306/lab5
     autoDeploy: true
+
 databases:
   - name: mysdb
     plan: free
