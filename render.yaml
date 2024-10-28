@@ -14,11 +14,3 @@ services:
         value: mysql://lab5:010405@mysdb.internal:3306/lab5  # Внутрішній хост бази даних
     autoDeploy: true
 
-databases:
-  - name: mysdb
-    plan: free
-    engine: mysql
-    version: 8.0
-    initialDatabaseName: lab5
-    user: lab5
-    password: 010405
