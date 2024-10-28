@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: django-app
+    env: python
+    plan: free 
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn your_project_name.wsgi --log-file -
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: .settings
+      - key: SECRET_KEY
+        value: your-secret-key
+      - key: DATABASE_URL
+        value: mysql://your-db-username:your-db-password@your-db-hostname:3306/your-db-name
+    autoDeploy: true
+
+databases:
+  - name: mysql-db
+    plan: free
+    engine: mysql
+    version: 8.0
+    initialDatabaseName: lab5
+    user: lab5
+    password: admin
